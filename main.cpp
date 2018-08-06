@@ -1,16 +1,16 @@
 #include <iostream>
 #include <netinet/ether.h>
 #include <netinet/ip.h>
-#include <pcap.h>
+#include "jpcaplib.h"
 #include "mac.h"
 #include "ip.h"
+#include "arp.h"
 #include "printdata.hpp"
 
 using namespace std;
 
 #define ETHER_BROADCAST 0xFFFFFFFF
-#define INET_ADDR_LEN 6
-#define ARP_REQUEST 1
+
 
 uint32_t BROADCAST = ETHER_BROADCAST;
 
@@ -34,8 +34,7 @@ struct NetInfo{
     Ip ip;
 };
 
-int sendRequestARP(const pcap_t *pcd, const uint32_t *ip, const uint8_t *myMac);
-bool getRemoteHWaddr(const uint32_t *ip, const uint8_t *myMac, uint8_t* macBuf);
+bool getRemoteHWaddr(pcap_t *pcd, const uint32_t *ip, uint8_t* mac_buf);
 
 
 int main(int argc, char* argv[])
@@ -50,38 +49,46 @@ int main(int argc, char* argv[])
 
     //Get my MAC addr use socket IO
     host.mac.getMyMac(dev);
-//    sender.mac=
+    host.ip.getMyIp(dev);
+
+    //Set Sender IP Addr to argv[2]
+    sender.ip=argv[2];
+
+    //init ARP request packet to get sender MAC addr
+    Arp arp_request_packet;
+
+    arp_request_packet.initEth(host.mac.retnMac(),(uint8_t*)(&BROADCAST),ETHERTYPE_ARP);
+    arp_request_packet.initRequestARP(host.mac.retnMac(),host.ip.retnIP(), sender.ip.retnIP());
+
+    pcap_t*pcd = pOpen(dev);
+    getRemoteHWaddr(pcd, host.ip.retnIP(),host.mac.retnMac());
 
     return 0;
 }
 
 
-int sendRequestARP(const pcap_t* pcd, const uint32_t *ip, const uint8_t *myMac)
+
+bool getRemoteHWaddr(pcap_t* pcd, const uint32_t *ip, uint8_t *mac_buf)
 {
-    static struct ether_header eth;
+    uint8_t* packet;
+    int data_len;
+    struct ether_arp *arp;
+    while(recvPacket(pcd,&packet,data_len))
+    {
+        if(parseEther(&packet,data_len,ETHERTYPE_ARP))
+        {
+            arp = (struct ether_arp *)packet;
+            //if ARP Sender IP equals IP
+            if(memcmp(arp->arp_spa,ip,INET_ADDR_LEN))
+            {
+                //copy MAC Addr to macBuf
+                memcpy(mac_buf, arp->arp_sha,ETHER_ADDR_LEN);
+                return true;
+            }
+        }
+    }
 
-    //set ETHER_HEADER
-
-    memcpy(eth.ether_dhost,&BROADCAST,ETHER_ADDR_LEN);
-    memcpy(eth.ether_shost,myMac,ETHER_ADDR_LEN);
-    eth.ether_type=ETHERTYPE_ARP;
-
-    static struct ether_arp arp;
-
-    arp.ea_hdr.ar_hrd = ntohs(1);                //set Hardware Type Ethernet
-    arp.ea_hdr.ar_pro = ntohs(ETHERTYPE_IP);     //set ARP type to IP
-    arp.ea_hdr.ar_hln = ETHER_ADDR_LEN;          //set Hardware length to 6(MAC Addr)
-    arp.ea_hdr.ar_pln = INET_ADDR_LEN;           //set Protocol length to 4(IPv4 Addr)
-    arp.ea_hdr.ar_op = ARP_REQUEST;              //set OPCODE to REQUEST
-
-    //return 0 on success if not -1
-    return pcap_sendpacket(pcd, &eth, sizeof(eth))
-
-}
-bool getRemoteHWaddr(const uint32_t *ip,const uint8_t *myMac, uint8_t *macBuf)
-{
-    sendRequestARP(ip,myMac);
-
+   return false;
 
 }
 

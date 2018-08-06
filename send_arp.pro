@@ -10,11 +10,13 @@ SOURCES += main.cpp \
     ip.cpp \
     mac.cpp \
     jpcaplib.cpp \
-    printdata.cpp
+    printdata.cpp \
+    arp.cpp
 
 HEADERS += \
     getmyinfo.h \
     ip.h \
     mac.h \
     jpcaplib.h \
-    printdata.hpp
+    printdata.hpp \
+    arp.h
