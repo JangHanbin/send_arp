@@ -5,7 +5,7 @@
 #include <unistd.h>
 #include <net/ethernet.h>
 
-void getMyIP(char *device,uint32_t* my_IP)
+void getMyIP(const char *device,uint32_t* my_IP)
 {
     int fd;
     struct ifreq ifr;

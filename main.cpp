@@ -43,13 +43,17 @@ int main(int argc, char* argv[])
         usage();
     //set Device variable
     char* dev =argv[1];
-
     NetInfo host;
     NetInfo sender;
 
     //Get my MAC addr use socket IO
     host.mac.getMyMac(dev);
+
+    cout<<dev<<endl;
+    //why dev init after this fuction call
     host.ip.getMyIp(dev);
+    cout<<dev<<endl;
+    cout<<"???"<<endl;
 
     //Set Sender IP Addr to argv[2]
     sender.ip=argv[2];
@@ -60,8 +64,10 @@ int main(int argc, char* argv[])
     arp_request_packet.initEth(host.mac.retnMac(),(uint8_t*)(&BROADCAST),ETHERTYPE_ARP);
     arp_request_packet.initRequestARP(host.mac.retnMac(),host.ip.retnIP(), sender.ip.retnIP());
 
-    pcap_t*pcd = pOpen(dev);
-    getRemoteHWaddr(pcd, host.ip.retnIP(),host.mac.retnMac());
+
+
+//    pcap_sendpacket(pcd,(uint8_t *)(&arp_request_packet))
+//    getRemoteHWaddr(pcd, host.ip.retnIP(),host.mac.retnMac());
 
     return 0;
 }

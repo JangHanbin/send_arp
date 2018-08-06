@@ -40,9 +40,9 @@ bool Ip::operator==(uint32_t *op1)
 
 }
 
-void Ip::getMyIp(char *device)
+void Ip::getMyIp(const char *device)
 {
-    getMyIP(device,&this->val);
+    getMyIP(device,&(this->val));
 }
 
 uint32_t* Ip::retnIP()

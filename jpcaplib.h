@@ -25,7 +25,7 @@ struct Packet{
 
 #pragma pack(pop)
 
-pcap_t* pOpen(char* device);                                        //open libpcap discrytor
+pcap_t* pOpen(char* device, pcap_t *pcd);                                        //open libpcap discrytor
 bool recvPacket(pcap_t *pcd, uint8_t **packetData, int &dataLen);   //recv data & save data point packetData
 bool parseEther(uint8_t **data, int& dataLen, int type);            //parse Ethernet header & cmp type if type is right move pointer to type header
 bool parseIP(uint8_t** data,int& dataLen, int type);                //parse IP header & cmp type if type is right move pointer to type header
