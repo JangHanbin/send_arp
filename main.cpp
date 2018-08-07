@@ -76,7 +76,8 @@ int main(int argc, char* argv[])
     while(!getRemoteHWaddr(pcd,sender.ip.retnIP(),sender.mac.retnMac()));
 
     //there is don't need to know target_mack
-    Ip target_ip=argv[3];
+    Ip target_ip;
+    target_ip=argv[3];
     Arp arp_reply_packet;
     arp_reply_packet.initEth(host.mac.retnMac(),sender.mac.retnMac(),ETHERTYPE_ARP);
     arp_reply_packet.initReplyARP(host.mac.retnMac(),sender.mac.retnMac(),target_ip.retnIP(),sender.ip.retnIP()); //sender Protocol IP set to target ip

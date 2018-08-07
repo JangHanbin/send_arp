@@ -7,8 +7,6 @@
 #define ARP_REQUEST 1
 #define ARP_REPLY 2
 
-//set by zero
-static uint8_t ARP_UNKNOWN[ETHER_ADDR_LEN] = {0,};
 //ARP class must be alignment set to 1byte.
 #pragma pack(push,1)
 
