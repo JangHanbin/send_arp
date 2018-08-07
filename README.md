@@ -8,3 +8,4 @@ Use qmake
 # Usage
 ./send_arp <interface> <sender_ip> <target_ip>
 
+# work for @gilgil
