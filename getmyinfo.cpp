@@ -18,7 +18,7 @@ void getMyIP(const char *device,uint32_t* my_IP)
 
     ioctl(fd,SIOCGIFADDR,&ifr); //SIOCGIFADDR -> Get Protocol Address
     close(fd);
-    memcpy(my_IP,ifr.ifr_ifru.ifru_addr.sa_data+2,sizeof(struct sockaddr));
+    memcpy(my_IP,ifr.ifr_ifru.ifru_addr.sa_data+2,sizeof(uint32_t));
 }
 
 void getMyhaddr(char* device,u_int8_t* my_MAC)

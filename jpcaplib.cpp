@@ -92,9 +92,9 @@ bool parseTCPData(uint8_t **data, int &dataLen)
 }
 
 
-pcap_t * pOpen(char *device, pcap_t* pcd)
+pcap_t * pOpen(char *device)
 {
-
+    pcap_t *pcd;
     if((pcd=pcap_open_live(device,BUFSIZ,0,1,errBuf))==NULL)
     {
         cout<<"Pcap Open Error!"<<endl;

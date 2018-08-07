@@ -3,8 +3,9 @@
 
 #include <netinet/ether.h>
 
-#define INET_ADDR_LEN 6
+#define INET_ADDR_LEN 4
 #define ARP_REQUEST 1
+#define ARP_REPLY 2
 
 //set by zero
 static uint8_t ARP_UNKNOWN[ETHER_ADDR_LEN] = {0,};
@@ -20,6 +21,7 @@ public:
     Arp();
     void initEth(uint8_t* src, uint8_t* dest, uint16_t type);
     void initRequestARP(uint8_t* src_HW, uint32_t *src_protocol, uint32_t *dest_protocol);
+    void initReplyARP(uint8_t* src_HW, uint8_t* dest_HW, uint32_t *src_protocol, uint32_t *dest_protocol);
 
 
 };

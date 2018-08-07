@@ -38,7 +38,7 @@ void Arp::initReplyARP(uint8_t *src_HW, uint8_t *dest_HW, uint32_t *src_protocol
     arp.ea_hdr.ar_pro = htons(ETHERTYPE_IP);     //set ARP type to IP
     arp.ea_hdr.ar_hln = ETHER_ADDR_LEN;          //set Hardware length to 6(MAC Addr)
     arp.ea_hdr.ar_pln = INET_ADDR_LEN;           //set Protocol length to 4(IPv4 Addr)
-    arp.ea_hdr.ar_op = htons(ARP_REQUEST);              //set OPCODE to REQUEST
+    arp.ea_hdr.ar_op = htons(ARP_REPLY);              //set OPCODE to REQUEST
 
 
     memcpy(&arp.arp_sha, src_HW, ETHER_ADDR_LEN);       //set Sender MAC Addr to src
